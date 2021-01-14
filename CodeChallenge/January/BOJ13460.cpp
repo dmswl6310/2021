@@ -11,23 +11,27 @@ bool visit[10][10][10][10] = { false, };
 char map[10][10];
 pos target;
 int change(pos red, pos blue);
-pos knowEnd(pos nowR, pos nowB, int dir);
+pair<pos, pos> moveBall(pos nowR, pos nowB, int dir);
 int main() {
 	int N, M;
 	cin >> N >> M;
 	pos blue, red;
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < M; j++) {
-			cin >> map[i][j];
-			if (map[i][j] == 'B') blue = { i,j };
-			else if (map[i][j] == 'R')red = { i,j };
-			else if (map[i][j] == 'O') target = { i,j };
+			char tmp;
+			cin >> tmp;
+			if (tmp != '#' && tmp != '.') {
+				map[i][j] = '.';
+				if (tmp == 'B') blue = { i,j };
+				else if (tmp == 'R') red = { i,j };
+				else  target = { i,j };
+			}
+			else {
+				map[i][j] = tmp;
+			}
 		}
 	}
 	cout << change(red, blue);
-
-
-
 }
 
 int change(pos red, pos blue) {
@@ -41,11 +45,12 @@ int change(pos red, pos blue) {
 		q.pop();
 		for (int i = 0; i < 4; i++) {
 			//방향따라 더 가까운것 먼저 움직이는게 포인트
-			pair<pos, pos> tmp = knowEnd(R, B, i);
+			pair<pos, pos> tmp = moveBall(R, B, i);
 			pos tmpR = tmp.first;
 			pos tmpB = tmp.second;
-			if ((tmpB.row == 0 && tmpB.col == 0) || visit[tmpR.row][tmpR.col][tmpB.row][tmpB.col] == true) continue;
-			else if (tmpR.row == 0 && tmpR.col == 0) return turn;
+			if (tmpB.row == 0) continue;
+			if (tmpR.row == 0) return turn;
+			if (visit[tmpR.row][tmpR.col][tmpB.row][tmpB.col] == true) continue;
 			visit[tmpR.row][tmpR.col][tmpB.row][tmpB.col] = true;
 			q.push({ tmpR, tmpB });
 		}
@@ -53,52 +58,44 @@ int change(pos red, pos blue) {
 	return -1;
 }
 
-pair<pos, pos> knowEnd(pos nowR, pos nowB, int dir) {
-	pair<pos, pos> position = { nowR,nowB };
-	pair<pos, pos> answer = { {0,0},{0,0} };
-	int rowR = nowR.row;
-	int colR = nowR.col;
-	int rowB = nowB.row;
-	int colB = nowB.col;
-	bool flag;
+pair<pos, pos> moveBall(pos nowR, pos nowB, int dir) {
+	bool flag = false;
 	switch (dir) {
 	case 0:
-		flag = (colR > colB);
+		flag = (nowR.col>nowB.col);
 		break;
 	case 1:
-		flag = (rowR > rowB);
+		flag = (nowR.row > nowB.row);
 		break;
 	case 2:
-		flag = (colR < colB);
+		flag = (nowR.col < nowB.col);
 		break;
 	case 3:
-		flag = (rowR < rowB);
+		flag = (nowR.row<nowB.row);
 		break;
 	}
-	if (!flag)  position = { nowB, nowR };
-	int firstR = position.first.row;
-	int firstC = position.first.col;
-	int secondR = position.second.row;
-	int secondC = position.second.col;
-	while (map[firstR + dirR[dir]][firstC + dirC[dir]] != '#') {
-		firstR += dirR[dir];
-		firstC += dirC[dir];
-		if (firstR == target.row && firstC == target.col) break;
+	pos order[2] = { nowB,nowR };
+	if (flag) {
+		order[0] = nowR;
+		order[1] = nowB;
 	}
-	if(answer.first.row!=0 && answer.first.col!=0) {
-		position.first.row = firstR;
-		position.first.col = firstC;
+	//움직이는방향 먼저옮겨지는 구슬 옮기기
+	for (int i = 0; i <= 1;i++) {
+		while (map[order[i].row + dirR[dir]][order[i].col + dirC[dir]] != '#') {
+			//다른공이 막고잇어도 break
+			if (i == 1 &&order[0].row==order[1].row && order[0].col==order[1].col) break;
+			order[i].row += dirR[dir];
+			order[i].col += dirC[dir];
+			//공이 탈출하면 row를 0으로 표시
+			if (order[i].row == target.row && order[i].col == target.col) {
+				if (!flag && i == 0) {
+					return { {0,0},{0,0} };
+				}
+				order[i].row=0;
+				break;
+			}
+		}
 	}
-
-	while (map[secondR + dirR[dir]][secondC + dirC[dir]] != '#') {
-		secondR += dirR[dir];
-		secondC += dirC[dir];
-		if (secondR == target.row && secondC == target.col) break;
-	}
-	if (answer.first.row != 0 && answer.first.col != 0) {
-		position.first.row = firstR;
-		position.first.col = firstC;
-	}
-
-
+	if (flag) return {order[0], order[1]};
+	else return { order[1], order[1] };
 }
