@@ -1,3 +1,4 @@
+//짜는데 힘들었는데 잘 짠것같지도 않아요 ㅠㅠ
 #include <iostream>
 #include <queue>
 using namespace std;
@@ -36,12 +37,15 @@ int main() {
 
 int change(pos red, pos blue) {
 	visit[red.row][red.col][blue.row][blue.col] = true;
-	queue <pair<pos, pos>> q;
-	q.push({ red,blue });
-	int turn = 0;
-	while ((!q.empty()) && (++turn) <= 10) {
-		pos R = q.front().first;
-		pos B = q.front().second;
+	//이렇게 복잡게 해야되나..??
+	queue <pair<pair<pos, pos>, int>> q;
+	q.push({ { red,blue },0 });
+	while ((!q.empty())) {
+		pos R = q.front().first.first;
+		pos B = q.front().first.second;
+		int turn = q.front().second;
+		//여기 자꾸 실수하는데...큐에 담겨있는 turn이 10인거는 답이 아닌거니까 break하면 된다!!
+		if (turn > 9) break;
 		q.pop();
 		for (int i = 0; i < 4; i++) {
 			//방향따라 더 가까운것 먼저 움직이는게 포인트
@@ -49,10 +53,10 @@ int change(pos red, pos blue) {
 			pos tmpR = tmp.first;
 			pos tmpB = tmp.second;
 			if (tmpB.row == 0) continue;
-			if (tmpR.row == 0) return turn;
+			if (tmpR.row == 0) return turn + 1;
 			if (visit[tmpR.row][tmpR.col][tmpB.row][tmpB.col] == true) continue;
 			visit[tmpR.row][tmpR.col][tmpB.row][tmpB.col] = true;
-			q.push({ tmpR, tmpB });
+			q.push({ { tmpR, tmpB }, turn + 1 });
 		}
 	}
 	return -1;
@@ -62,7 +66,7 @@ pair<pos, pos> moveBall(pos nowR, pos nowB, int dir) {
 	bool flag = false;
 	switch (dir) {
 	case 0:
-		flag = (nowR.col>nowB.col);
+		flag = (nowR.col > nowB.col);
 		break;
 	case 1:
 		flag = (nowR.row > nowB.row);
@@ -71,7 +75,7 @@ pair<pos, pos> moveBall(pos nowR, pos nowB, int dir) {
 		flag = (nowR.col < nowB.col);
 		break;
 	case 3:
-		flag = (nowR.row<nowB.row);
+		flag = (nowR.row < nowB.row);
 		break;
 	}
 	pos order[2] = { nowB,nowR };
@@ -80,10 +84,10 @@ pair<pos, pos> moveBall(pos nowR, pos nowB, int dir) {
 		order[1] = nowB;
 	}
 	//움직이는방향 먼저옮겨지는 구슬 옮기기
-	for (int i = 0; i <= 1;i++) {
+	for (int i = 0; i <= 1; i++) {
 		while (map[order[i].row + dirR[dir]][order[i].col + dirC[dir]] != '#') {
 			//다른공이 막고잇어도 break
-			if (i == 1 &&order[0].row==order[1].row && order[0].col==order[1].col) break;
+			if (i == 1 && order[0].row == order[1].row + dirR[dir] && order[0].col == order[1].col + dirC[dir]) break;
 			order[i].row += dirR[dir];
 			order[i].col += dirC[dir];
 			//공이 탈출하면 row를 0으로 표시
@@ -91,11 +95,11 @@ pair<pos, pos> moveBall(pos nowR, pos nowB, int dir) {
 				if (!flag && i == 0) {
 					return { {0,0},{0,0} };
 				}
-				order[i].row=0;
+				order[i].row = 0;
 				break;
 			}
 		}
 	}
-	if (flag) return {order[0], order[1]};
-	else return { order[1], order[1] };
+	if (flag) return { order[0], order[1] };
+	else return { order[1], order[0] };
 }
