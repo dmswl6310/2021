@@ -33,5 +33,8 @@
     <ClCompile Include="LeetCode1749_Maximum Absolute Sum of Any Subarray.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="LeetCode1011_Capacity To Ship Packages Within D Days.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
