@@ -21,5 +21,8 @@
     <ClCompile Include="BOJ1303_전쟁-전투.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="BOJ11724_연결요소의개수.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
