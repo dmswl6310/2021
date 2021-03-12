@@ -22,8 +22,8 @@ int main() {
 	vector<int> group;
 	for (int i = 0; i < N; i++) {
 		for (int j = 0; j < N; j++) {
-			if (!visited[i][j] && map[i][j]=='1') {
-				int danji=doBFS(i, j);
+			if (!visited[i][j] && map[i][j] == '1') {
+				int danji = doBFS(i, j);
 				group.push_back(danji);
 			}
 		}
@@ -31,7 +31,7 @@ int main() {
 	cout << group.size() << "\n";
 	sort(group.begin(), group.end());
 	for (int i = 0; i < group.size(); i++) {
-		cout<<group[i]<<"\n";
+		cout << group[i] << "\n";
 	}
 
 }
@@ -49,7 +49,7 @@ int doBFS(int i, int j) {
 		for (int i = 0; i < 4; i++) {
 			int nextR = r + dirR[i];
 			int nextC = c + dirC[i];
-			if (nextR >= 0 && nextR < N && nextC >= 0 & nextC < N && !visited[nextR][nextC] && map[nextR][nextC]=='1') {
+			if (nextR >= 0 && nextR < N && nextC >= 0 & nextC < N && !visited[nextR][nextC] && map[nextR][nextC] == '1') {
 				visited[nextR][nextC] = true;
 				num++;
 				q.push({ nextR,nextC });
