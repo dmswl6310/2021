@@ -2,10 +2,10 @@
 #include<deque>
 #include<vector>
 #define INF 987654321
-typedef struct {
+struct Node{
 	int row;
 	int col;
-}Node;
+};
 int dirR[4] = { 0,1,0,-1 };
 int dirC[4] = { 1,0,-1,0 };
 using namespace std;

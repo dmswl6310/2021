@@ -69,5 +69,8 @@
     <ClCompile Include="BOJ1261_알고스팟.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="BOJ4485_녹색 옷 입은 애가 젤다지.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
