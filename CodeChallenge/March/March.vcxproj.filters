@@ -66,5 +66,8 @@
     <ClCompile Include="Programmers_합승 택시 요금.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="BOJ1261_알고스팟.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
